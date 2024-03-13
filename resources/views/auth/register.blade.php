@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ Route::currentRouteName() === 'register_checker' ? route('register_checker') : route('register') }}">
         @csrf
 
         <!-- Name -->
