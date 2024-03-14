@@ -2,10 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Wallet;
-use App\Http\Requests\StoreWalletRequest;
-use App\Http\Requests\UpdateWalletRequest;
-
 class WalletController extends Controller
 {
     /**
