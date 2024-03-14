@@ -22,11 +22,14 @@ class Wallet extends Model
     public function creditBalance(float $amount)
     {
         $this->increment('balance', $amount);
+        
+        Log::alert("User {$this->user->name} Wallet credited");
     }
 
     public function debitBalance(float $amount)
     {
-        $this->decrement
-        ('balance', $amount);
+        $this->decrement('balance', $amount);
+        
+        Log::alert("User {$this->user->name} Wallet debited");
     }
 }
