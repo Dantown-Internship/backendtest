@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\TransactionResource;
 use App\Models\SystemPool;
 use App\Models\Transaction;
 use App\Http\Requests\ReviewTransactionRequest;
@@ -10,8 +9,7 @@ use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Redirect;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class TransactionController extends Controller
 {
@@ -31,14 +29,6 @@ class TransactionController extends Controller
     public function create()
     {
         return view('transaction.create')->with('user', auth()->user())->with('transaction_types', config('constant.transaction.type'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function check()
-    {
-        return view('transaction.check')->with('user', auth()->user());
     }
 
     /**
@@ -122,6 +112,11 @@ class TransactionController extends Controller
      */
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
+        if (!Gate::allows('edit-transaction', $transaction)) {
+            Log::notice("{$transaction->user->name} tried to edit a transaction of status {$transaction->status}");
+            abort(403, 'Transaction cannot be edited because it is already approved or pending.');
+        }
+
         $request->merge([
             'status' => config('constant.status.pending')
         ]);

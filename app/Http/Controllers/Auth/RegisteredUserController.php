@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
-use Log;
+use Illuminate\Support\Facades\Log;
 
 class RegisteredUserController extends Controller
 {

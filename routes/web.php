@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome')->with('system_pool', SystemPool::where('name', config('constant.system_pool.name'))->first());
-})->name('home');
+})->middleware(['auth', 'verified'])->name('home');
 
 Route::get('/wallet', function () {
     return view('wallet')->with('user', auth()->user());
@@ -39,7 +39,7 @@ Route::middleware('maker')->group(function () {
     Route::get('/transaction/create', [TransactionController::class, 'create'])->name('transaction.create');
     Route::post('/transaction/create', [TransactionController::class, 'store'])->name('transaction.store');
     Route::get('/transaction/edit/{transaction}', [TransactionController::class, 'edit'])->name('transaction.edit');
-    Route::post('/transaction/edit/{transaction}', [TransactionController::class, 'update'])->name('transaction.update');
+    Route::put('/transaction/edit/{transaction}', [TransactionController::class, 'update'])->name('transaction.update');
 });
 
 Route::middleware('checker')->group(function () {
