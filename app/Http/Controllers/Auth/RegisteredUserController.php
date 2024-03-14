@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Log;
 
 class RegisteredUserController extends Controller
 {
@@ -59,7 +60,7 @@ class RegisteredUserController extends Controller
             Auth::login($user);
         } catch (\Exception $e) {
             DB::rollback();
-            $request->session()->flash('error', $e->getMessage());
+            Log::error($e->getMessage());
         }
 
         return redirect(RouteServiceProvider::HOME);

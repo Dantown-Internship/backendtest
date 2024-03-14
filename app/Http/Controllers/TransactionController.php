@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateTransactionRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
+use Log;
 
 class TransactionController extends Controller
 {
@@ -49,9 +50,11 @@ class TransactionController extends Controller
             'user_id' => auth()->user()->id,
             'third_party' => env('APP_NAME')
         ]);
-        Transaction::create($request->all());
+        $transaction = Transaction::create($request->all());
 
         $request->session()->flash('message', 'Your transaction will be reviewed soon');
+        
+        Log::info("A transaction for {$transaction->user->name} has been created");
 
         return redirect()->route('transaction');
     }
@@ -62,6 +65,7 @@ class TransactionController extends Controller
     public function edit(Transaction $transaction)
     {
         if (!Gate::allows('edit-transaction', $transaction)) {
+            Log::notice("{$transaction->user->name} tried to edit a transaction of status {$transaction->status}");
             abort(403, 'Transaction cannot be edited because it is already approved or pending.');
         }
 
@@ -98,16 +102,17 @@ class TransactionController extends Controller
                     if ($request->note) $transaction->updateNote($request->note);
                 }
                 $transaction->updateStatus($request->status);
+                Log::alert("Transaction has been {$transaction->status}");
             } else {
-                $request->session()->flash('message', "Transaction still $request->status");
+                $request->session()->flash('message', "Transaction is still $request->status");
+                Log::warning("Transaction is still $transaction->status");
             }
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             $request->session()->flash('error', $e->getMessage());
+            Log::error("Transaction failed to update: ". $e->getMessage());
         }
-
-        $request->session()->flash('message', "Transaction $request->status");
 
         return redirect()->route('transaction');
     }
@@ -124,6 +129,8 @@ class TransactionController extends Controller
         $transaction->update($request->all());
 
         $request->session()->flash('message', 'Your transaction will be reviewed soon');
+        
+        Log::alert("Transaction has been updated");
 
         return redirect()->route('transaction');
     }
