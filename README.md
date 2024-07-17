@@ -1,53 +1,39 @@
 
-# Technical Test: Maker-Checker System with Wallet Management
+# Dantown Test - Maker-Checker System with Wallet Management
 
-# Task Description:
-You are tasked with extending the maker-checker system with a wallet management feature using Laravel. The system allows users to create transactions that need to be approved by a designated checker before they are executed. Upon approval, the transaction should either credit or debit the user's wallet and deduct or add to the system pool balance. You are required to implement the following features:
+## Task Description:
+The objective was to build a maker-checker system using Laravel's MVC framework. This system allows users to create transactions that must be approved by a checker before execution. Approved transactions either credit or debit the user's wallet, while also updating the system pool balance. The following features were required:
 
-# Functional Requirements:
-1. Authentication: Implement authentication using Laravel's built-in authentication system.
+## Features:
+1. Authentication: Implement authentication using Laravel's built-in system.
 2. Transaction Management:
-   - Users should be able to create transactions with details such as type and description.
-   - Transactions should have statuses: "pending", "approved", or "rejected".
-3. Approval Workflow:
-   - Transactions created by users are initially marked as "pending".
-   - Checkers should be able to review transactions and approve or reject them.
-   - Upon approval, transactions should be marked as "approved" and executed.
-   - Upon rejection, transactions should be marked as "rejected" and require modifications from the maker.
-4. Wallet Management:
-   - Each user should have a wallet balance.
-   - Approved transactions should either credit or debit the user's wallet.
-   - Approved transactions should also add to or deduct from the system pool balance.
-5. User Roles and Permissions:
-   - Implement role-based access control to designate users as makers and checkers.
-   - Makers can create transactions.
-   - Checkers can approve or reject transactions.
+   - Approved transactions adjust the system pool balance, acting as the third-party account.
+   - Rejected transactions include notes for the user to review and possibly resubmit.
+3. Dashboard Management:
+   - Each user has a wallet balance upon registration.
+   - Approved transactions either credit or debit the user's wallet while debiting or crediting the system pool balance in a single database transaction.
+4. Review Process:
+   - Transactions start with a "pending" status.
+   - Only pending transactions can be reviewed.
+   - Approved transactions are marked "approved" and executed without notes.
+   - Rejected transactions are marked "rejected" with required notes.
+   - Only rejected transactions can be updated.
+   - Updated transactions revert to "pending" for re-review.
+5. Role management & access:
+   - Makers can create transactions only.
+   - Checkers can approve or reject transactions only.
+   - `register` auth endpoint creates a user with role of `maker`.
+   - `checker` endpoint creates a user with role of `checker`.
 
-# Technical Requirements:
-1. Models: Implement User, Transaction, and Wallet models with appropriate relationships.
-2. Database Schema: Design a suitable database schema to store users, transactions, and wallet balances.
-3. Routes and Controllers: Implement routes and controllers for managing transactions, approvals, and wallet balances.
-4. Views: Create views and forms for users to create transactions and for checkers to review and approve/reject them.
-5. Middleware/Authorization: Implement middleware or authorization checks to ensure that only authorized users can perform specific actions.
-6. Testing: Write unit tests and feature tests to ensure the functionality works as expected.
-7. Documentation: Provide clear documentation on how to set up and run the application, including instructions for running tests.
+## Installation procedure/Usage:
 
-# Bonus (Optional):
-- Implement logging to track all actions taken on transactions.
-- Add notifications or emails to notify users when their transactions are approved/rejected.
-- Implement additional features or optimizations as you see fit.
+- Clone the repository: ```git clone https://github.com/Dakeem05/dantown_test.git``` and then ```cd dantown_test``` using your teminal
+- Install composer dependencies: ```composer install```
+- Install node dependencies: ```npm install```
+- Set up environment file: rename the .env.example to .env and update with the required configurations
+- Generate application key: ```php artisan key:generate```
+- Run database migrations and seeders: ```php artisan migrate --seed```
+- Serve the application: ```php artisan serve``` The application can now be accessed at http://localhost:8000.
+- Register an account with the ```/register``` or ```/checker``` endpoint
+- Index transaction with the ```/transaction``` based on user role
 
-# Submission Guidelines
-Submit via GitHub
-Make a PR to this repo https://github.com/Dantown-Internship/backendtest
-
-# Evaluation Criteria:
-- Implementation of required features and functionality.
-- Code quality, including adherence to Laravel best practices.
-- Test coverage and quality of tests.
-- Documentation clarity and completeness.
-
-
-
-# Conclusion:
-This technical test evaluates your ability to extend the maker-checker system with wallet management using Laravel. You are expected to demonstrate your understanding of Laravel fundamentals, including authentication, models, controllers, views, and testing, as well as your ability to implement additional features such as wallet management. Good luck!
