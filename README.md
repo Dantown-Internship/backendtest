@@ -1,53 +1,130 @@
+## Maker Checker System Documentation
 
-# Technical Test: Maker-Checker System with Wallet Management
+### Overview
 
-# Task Description:
-You are tasked with extending the maker-checker system with a wallet management feature using Laravel. The system allows users to create transactions that need to be approved by a designated checker before they are executed. Upon approval, the transaction should either credit or debit the user's wallet and deduct or add to the system pool balance. You are required to implement the following features:
+This application manages user transactions with functionality for creating, viewing, approving, and rejecting transactions. It includes notifications for users when their transactions are approved or rejected.
 
-# Functional Requirements:
-1. Authentication: Implement authentication using Laravel's built-in authentication system.
+### Features
+
+1. User Authentication: Secure access for authenticated users.
 2. Transaction Management:
-   - Users should be able to create transactions with details such as type and description.
-   - Transactions should have statuses: "pending", "approved", or "rejected".
-3. Approval Workflow:
-   - Transactions created by users are initially marked as "pending".
-   - Checkers should be able to review transactions and approve or reject them.
-   - Upon approval, transactions should be marked as "approved" and executed.
-   - Upon rejection, transactions should be marked as "rejected" and require modifications from the maker.
-4. Wallet Management:
-   - Each user should have a wallet balance.
-   - Approved transactions should either credit or debit the user's wallet.
-   - Approved transactions should also add to or deduct from the system pool balance.
-5. User Roles and Permissions:
-   - Implement role-based access control to designate users as makers and checkers.
-   - Makers can create transactions.
-   - Checkers can approve or reject transactions.
+   - Create Transactions
+   - View Transactions
+   - Approve Transactions (accessible by users with the `checker` role)
+   - Reject Transactions (accessible by users with the `checker` role)
+   Note: Menu dropdown contains all navigation link.
+3. Notifications: Users receive notifications via email when their transactions are approved or rejected.
 
-# Technical Requirements:
-1. Models: Implement User, Transaction, and Wallet models with appropriate relationships.
-2. Database Schema: Design a suitable database schema to store users, transactions, and wallet balances.
-3. Routes and Controllers: Implement routes and controllers for managing transactions, approvals, and wallet balances.
-4. Views: Create views and forms for users to create transactions and for checkers to review and approve/reject them.
-5. Middleware/Authorization: Implement middleware or authorization checks to ensure that only authorized users can perform specific actions.
-6. Testing: Write unit tests and feature tests to ensure the functionality works as expected.
-7. Documentation: Provide clear documentation on how to set up and run the application, including instructions for running tests.
+### Requirements
 
-# Bonus (Optional):
-- Implement logging to track all actions taken on transactions.
-- Add notifications or emails to notify users when their transactions are approved/rejected.
-- Implement additional features or optimizations as you see fit.
+- Laravel 10.x
+- PHP 8.x
+- Database (MySQL)
+- Mail server configuration
 
-# Submission Guidelines
-Submit via GitHub
-Make a PR to this repo https://github.com/Dantown-Internship/backendtest
+### Setup Instructions
 
-# Evaluation Criteria:
-- Implementation of required features and functionality.
-- Code quality, including adherence to Laravel best practices.
-- Test coverage and quality of tests.
-- Documentation clarity and completeness.
+1. Clone the Repository
 
+   ```bash
+   git clone https://github.com/repo
+   cd transaction-management
+   ```
 
+2. Install Dependencies
 
-# Conclusion:
-This technical test evaluates your ability to extend the maker-checker system with wallet management using Laravel. You are expected to demonstrate your understanding of Laravel fundamentals, including authentication, models, controllers, views, and testing, as well as your ability to implement additional features such as wallet management. Good luck!
+   ```bash
+   composer install
+   npm install
+   ```
+
+3. Configure Environment
+
+   Copy `.env.example` to `.env` and configure your database and mail settings.
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Edit the `.env` file with your configuration details.
+
+4. Generate Application Key
+
+   ```bash
+   php artisan key:generate
+   ```
+
+5. Run Migrations
+
+   ```bash
+   php artisan migrate
+   ```
+
+6. Seed Database
+
+   If you have seed data, you can run:
+
+   ```bash
+   php artisan db:seed
+   ```
+
+   Note: Test with the seeded data for for user with role of checker.
+   'email' => 'loveday@example.com',
+   'password' => ('password'),
+
+7. Start the Development Server
+
+   ```bash
+   php artisan serve and
+   npm run dev
+   ```
+
+### Routes
+
+- GET `/transactions`: List all transactions for the authenticated user.
+- GET `/transactions/create`: Display the form to create a new transaction.
+- POST `/transactions`: Store a new transaction.
+- GET `/transactions/pending`: List all pending transactions (accessible by `checker` role).
+- POST `/transactions/{id}/approve`: Approve a transaction (accessible by `checker` role).
+- POST `/transactions/{id}/reject`: Reject a transaction (accessible by `checker` role).
+- GET `/wallet`: Show the user's wallet details.
+
+### Controllers
+
+- TransactionController: Manages transaction operations.
+  - `index()`: Displays transactions for the authenticated user.
+  - `create()`: Shows the form to create a transaction.
+  - `store(Request $request)`: Stores a new transaction.
+  - `pending()`: Shows all pending transactions.
+  - `approve($id)`: Approves a transaction and updates wallet and pool balances.
+  - `reject($id)`: Rejects a transaction.
+- WalletController: Manages user wallet operations.
+
+### Models
+
+- Transaction: Represents a transaction record.
+- User: Represents the authenticated user.
+- Wallet: Represents the user's wallet.
+- Pool: Represents a pool of funds.
+
+### Notifications
+
+- TransactionStatusUpdated: Notification sent via email when a transaction is approved or rejected.
+
+### Testing
+
+Perform the following tests:
+
+1. Unit Tests
+
+   ```bash
+   php artisan test
+   ```
+
+### Common Issues and Troubleshooting
+
+- RoleDoesNotExist Error: Ensure to seed the database so you have a default user with the role of checker.
+
+### Conclusion
+
+This documentation provides an overview of the application, including setup instructions, routes, controllers, models, and testing procedures. Follow these guidelines to configure, run, and test your application effectively.
